@@ -1,9 +1,12 @@
-from kivy.app import App
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.properties import ObjectProperty, ListProperty
-from kivy.uix.button import Button
+import random
+
 from difficulty import Difficulty
 from playermode import PlayerMode
+
+from kivy.app import App
+from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.properties import ObjectProperty, ListProperty, BooleanProperty
+from kivy.uix.button import Button
 from kivy.config import Config
 # For now, don't allow resize to simplify layouts. Later we'll fix this to be responsive.
 Config.set('graphics', 'resizable', False)
@@ -28,7 +31,7 @@ class ScreenGame(Screen):
     # for Kivy to bind to a property automatically, it must be a Kivy property (e.g. ListProperty or ObjectProperty)
     state = ListProperty(['', '', '', '', '', '', '', '', ''])
     currentPlayerToken = 'X'
-    allowMove = ObjectProperty(None)
+    allowMove = BooleanProperty(True)
     mode = ObjectProperty(None)
     difficulty = ObjectProperty(None)
     grid_size = 3
@@ -37,27 +40,38 @@ class ScreenGame(Screen):
     def select_cell(self, button: Button, x: int, y: int):
         self.state[x*self.grid_size+y] = self.currentPlayerToken
         button.text = self.currentPlayerToken
-        if self.check_win_condition():
-            self.reset()
-            return
-
-        if self.check_draw_condition():
-            self.reset()
-            return
-
-        self.switch_player()
-        if self.mode == PlayerMode.ONE:
-            self.allowMove = False
+        self.check_end_conditions()
 
     def player_moved(self):
+        self.switch_player()
         if self.mode == PlayerMode.ONE:
+            # self.allowMove = False
             self.move()
 
     def move(self):
-        pass
-        # self.allowMove = True
-        # choose a random grid cell
-        # select it
+        # on easy, the moves are completely random
+        if self.difficulty == Difficulty.EASY:
+            found = False
+            while not found:
+                cell = self.get_random_cell()
+                if self.state[cell] == '':
+                    found = True
+                    self.state[cell] = self.currentPlayerToken
+                    self.check_end_conditions()
+                    self.switch_player()
+
+        # on normal, the moves are mostly random, but the opponent will block you from completing 3
+        if self.difficulty == Difficulty.NORMAL:
+            return
+
+        # on hard, the opponent will choose the best possible move. The house always wins.
+        if self.difficulty == Difficulty.HARD:
+            return
+
+        return
+
+    def get_random_cell(self) -> int:
+        return random.randint(0, self.grid_size - 1) * self.grid_size + random.randint(0, self.grid_size - 1)
 
     def switch_player(self):
         self.currentPlayerToken = 'O' if self.currentPlayerToken == 'X' else 'X'
@@ -68,7 +82,15 @@ class ScreenGame(Screen):
                 self.state[i*self.grid_size+j] = ''
         self.allowMove = True
 
-    # TODO: optimize this to use only the x,y we're interested in
+    def check_end_conditions(self):
+        if self.check_win_condition():
+            self.reset()
+            return
+
+        if self.check_draw_condition():
+            self.reset()
+            return
+
     def check_win_condition(self) -> bool:
         return self.check_rows() or self.check_cols() or self.check_diagonals()
         pass
@@ -108,7 +130,7 @@ class ScreenGame(Screen):
         return False
 
     def is_disabled(self, current_state: str) -> bool:
-        return not self.allowMove or current_state != ''
+        return current_state != '' or not self.allowMove
 
     # def get_text(self, x: int, y: int) -> str:
     #     return self.state[x][y]
