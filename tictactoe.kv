@@ -1,0 +1,114 @@
+#:kivy 1.10.0
+# note: file name lacks underscores due to kivy's reliance on file naming convention
+
+<TicTacToeScreenManager>:
+    id: screen_manager
+
+    screen_player_select: screen_player_select
+    screen_difficulty_select: screen_difficulty_select
+    screen_game:  screen_game
+    mode: "single"
+    difficult: "normal"
+
+    ScreenPlayerSelect:
+        id: screen_player_select
+        name: "Player Select"
+        manager: screen_manager
+
+    ScreenDifficultySelect:
+        id: screen_difficulty_select
+        name: "Difficulty Select"
+        manager: screen_manager
+
+    ScreenGame:
+        id: screen_game
+        name: "Tic Tac Toe"
+        manager: screen_manager
+
+<ScreenPlayerSelect>:
+    BoxLayout:
+        size: self.parent.size  # important!
+        pos: self.parent.pos  # important!
+        orientation: 'vertical'
+        padding: 200
+        spacing: 20
+        Button:
+            text: "One Player"
+            on_release: root.manager.mode = "single"
+            on_release: root.manager.current = 'Difficulty Select'
+        Button:
+            text: "Two Player"
+            on_release: root.manager.mode = "two"
+            on_release: root.manager.current = 'Tic Tac Toe'
+
+<ScreenDifficultySelect>:
+    BoxLayout:
+        size: self.parent.size  # important!
+        pos: self.parent.pos  # important!
+        orientation: 'vertical'
+        padding: 200
+        spacing: 20
+        Button:
+            text: "Easy"
+            on_release: root.manager.difficulty = "easy"
+            on_release: root.manager.current = 'Tic Tac Toe'
+        Button:
+            text: "Normal"
+            on_release: root.manager.difficulty = "normal"
+            on_release: root.manager.current = 'Tic Tac Toe'
+        Button:
+            text: "Hard"
+            on_release: root.manager.difficulty = "hard"
+            on_release: root.manager.current = 'Tic Tac Toe'
+
+<ScreenGame>:
+    GridLayout:
+        rows:3
+        cols:3
+        spacing:10
+        padding:10
+        size: root.width, root.height
+        Button:
+            id: 0_0
+            font_size:100
+            disabled: True if self.text != "" else False
+
+        Button:
+            id: 0_1
+            font_size:100
+            disabled: True if self.text != "" else False
+
+        Button:
+            id: 0_2
+            font_size:100
+            disabled: True if self.text != "" else False
+
+        Button:
+            id: 1_0
+            font_size:100
+            disabled: True if self.text != "" else False
+
+        Button:
+            id: 1_1
+            font_size:100
+            disabled: True if self.text != "" else False
+
+        Button:
+            id: 1_2
+            font_size:100
+            disabled: True if self.text != "" else False
+
+        Button:
+            id: 2_0
+            font_size:100
+            disabled: True if self.text != "" else False
+
+        Button:
+            id: 2_1
+            font_size:100
+            disabled: True if self.text != "" else False
+
+        Button:
+            id: 2_2
+            font_size:100
+            disabled: True if self.text != "" else False
