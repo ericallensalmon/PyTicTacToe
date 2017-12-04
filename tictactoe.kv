@@ -1,6 +1,11 @@
 #:kivy 1.10.0
 #: import Difficulty difficulty.Difficulty
 #: import PlayerMode playermode.PlayerMode
+#: import Screen screens.screen.Screen
+#: import PlayerSelect screens.playerselect.PlayerSelect
+#: import DifficultySelect screens.difficultyselect.DifficultySelect
+#: import Game screens.game.Game
+
 # note: file name lacks underscores due to kivy's reliance on file naming convention
 
 <TicTacToeScreenManager>:
@@ -10,22 +15,22 @@
     screen_difficulty_select: screen_difficulty_select
     screen_game:  screen_game
 
-    ScreenPlayerSelect:
+    PlayerSelect:
         id: screen_player_select
-        name: "Player Select"
+        name: str(Screen.PLAYER_SELECT)
         manager: screen_manager
 
-    ScreenDifficultySelect:
+    DifficultySelect:
         id: screen_difficulty_select
-        name: "Difficulty Select"
+        name: str(Screen.DIFFICULTY_SELECT)
         manager: screen_manager
 
-    ScreenGame:
+    Game:
         id: screen_game
-        name: "Tic Tac Toe"
+        name: str(Screen.GAME)
         manager: screen_manager
 
-<ScreenPlayerSelect>:
+<PlayerSelect>:
     BoxLayout:
         size: self.parent.size  # important!
         pos: self.parent.pos  # important!
@@ -35,13 +40,13 @@
         Button:
             text: "One Player"
             on_release: root.manager.screen_game.mode = PlayerMode.ONE
-            on_release: root.manager.current = 'Difficulty Select'
+            on_release: root.manager.current = str(Screen.DIFFICULTY_SELECT)
         Button:
             text: "Two Player"
             on_release: root.manager.screen_game.mode = PlayerMode.TWO
-            on_release: root.manager.current = 'Tic Tac Toe'
+            on_release: root.manager.current = str(Screen.GAME)
 
-<ScreenDifficultySelect>:
+<DifficultySelect>:
     BoxLayout:
         size: self.parent.size  # important!
         pos: self.parent.pos  # important!
@@ -51,20 +56,17 @@
         Button:
             text: "Easy"
             on_release: root.manager.screen_game.difficulty = Difficulty.EASY
-            on_release: root.manager.current = 'Tic Tac Toe'
+            on_release: root.manager.current = str(Screen.GAME)
         Button:
             text: "Normal"
             on_release: root.manager.screen_game.difficulty = Difficulty.NORMAL
-            on_release: root.manager.current = 'Tic Tac Toe'
+            on_release: root.manager.current = str(Screen.GAME)
         Button:
             text: "Hard"
             on_release: root.manager.screen_game.difficulty = Difficulty.HARD
-            on_release: root.manager.current = 'Tic Tac Toe'
+            on_release: root.manager.current = str(Screen.GAME)
 
-<ScreenGame>:
-    allowMove: True
-    mode: PlayerMode.ONE
-    difficult: Difficulty.NORMAL
+<Game>:
     GridLayout:
         rows:3
         cols:3
@@ -75,62 +77,62 @@
         Button:
             font_size:100
             text: root.state[0]
-            disabled: root.is_disabled(root.state[0])
-            on_press: root.select_cell(self, 0, 0)
+            disabled: root.state[0] != ''
+            on_press: root.select_cell(0, 0)
             on_release: root.player_moved()
 
         Button:
             font_size:100
             text: root.state[1]
-            disabled: root.is_disabled(root.state[1])
-            on_press: root.select_cell(self, 0, 1)
+            disabled: root.state[1] != ''
+            on_press: root.select_cell(0, 1)
             on_release: root.player_moved()
 
         Button:
             font_size:100
             text: root.state[2]
-            disabled: root.is_disabled(root.state[2])
-            on_press: root.select_cell(self, 0, 2)
+            disabled: root.state[2] != ''
+            on_press: root.select_cell(0, 2)
             on_release: root.player_moved()
 
         Button:
             font_size:100
             text: root.state[3]
-            disabled: root.is_disabled(root.state[3])
-            on_press: root.select_cell(self, 1, 0)
+            disabled: root.state[3] != ''
+            on_press: root.select_cell(1, 0)
             on_release: root.player_moved()
 
         Button:
             font_size:100
             text: root.state[4]
-            disabled: root.is_disabled(root.state[4])
-            on_press: root.select_cell(self, 1, 1)
+            disabled: root.state[4] != ''
+            on_press: root.select_cell(1, 1)
             on_release: root.player_moved()
 
         Button:
             font_size:100
             text: root.state[5]
-            disabled: root.is_disabled(root.state[5])
-            on_press: root.select_cell(self, 1, 2)
+            disabled: root.state[5] != ''
+            on_press: root.select_cell(1, 2)
             on_release: root.player_moved()
 
         Button:
             font_size:100
             text: root.state[6]
-            disabled: root.is_disabled(root.state[6])
-            on_press: root.select_cell(self, 2, 0)
+            disabled: root.state[6] != ''
+            on_press: root.select_cell(2, 0)
             on_release: root.player_moved()
 
         Button:
             font_size:100
             text: str(root.state[7])
-            disabled: root.is_disabled(root.state[7])
-            on_press: root.select_cell(self, 2, 1)
+            disabled: root.state[7] != ''
+            on_press: root.select_cell(2, 1)
             on_release: root.player_moved()
 
         Button:
             font_size:100
             text: root.state[8]
-            disabled: root.is_disabled(root.state[8])
-            on_press: root.select_cell(self, 2, 2)
+            disabled: root.state[8] != ''
+            on_press: root.select_cell(2, 2)
             on_release: root.player_moved()
