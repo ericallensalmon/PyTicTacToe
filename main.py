@@ -26,7 +26,7 @@ class TicTacToeScreenManager(ScreenManager):
     #     game.difficulty = Difficulty.EASY
     #     game.mode = PlayerMode.ONE
     #     self.screen_game = game
-    #     self.current = str(Screen.GAME)
+    #     self.current = Screen.GAME.value
 
 
 class TicTacToeApp(App):

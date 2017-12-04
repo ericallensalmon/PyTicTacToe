@@ -17,17 +17,17 @@
 
     PlayerSelect:
         id: screen_player_select
-        name: str(Screen.PLAYER_SELECT)
+        name: Screen.PLAYER_SELECT.value
         manager: screen_manager
 
     DifficultySelect:
         id: screen_difficulty_select
-        name: str(Screen.DIFFICULTY_SELECT)
+        name: Screen.DIFFICULTY_SELECT.value
         manager: screen_manager
 
     Game:
         id: screen_game
-        name: str(Screen.GAME)
+        name: Screen.GAME.value
         manager: screen_manager
 
 <PlayerSelect>:
@@ -40,11 +40,11 @@
         Button:
             text: "One Player"
             on_release: root.manager.screen_game.mode = PlayerMode.ONE
-            on_release: root.manager.current = str(Screen.DIFFICULTY_SELECT)
+            on_release: root.manager.current = Screen.DIFFICULTY_SELECT.value
         Button:
             text: "Two Player"
             on_release: root.manager.screen_game.mode = PlayerMode.TWO
-            on_release: root.manager.current = str(Screen.GAME)
+            on_release: root.manager.current = Screen.GAME.value
 
 <DifficultySelect>:
     BoxLayout:
@@ -56,15 +56,15 @@
         Button:
             text: "Easy"
             on_release: root.manager.screen_game.difficulty = Difficulty.EASY
-            on_release: root.manager.current = str(Screen.GAME)
+            on_release: root.manager.current = Screen.GAME.value
         Button:
             text: "Normal"
             on_release: root.manager.screen_game.difficulty = Difficulty.NORMAL
-            on_release: root.manager.current = str(Screen.GAME)
+            on_release: root.manager.current = Screen.GAME.value
         Button:
             text: "Hard"
             on_release: root.manager.screen_game.difficulty = Difficulty.HARD
-            on_release: root.manager.current = str(Screen.GAME)
+            on_release: root.manager.current = Screen.GAME.value
 
 <Game>:
     GridLayout:
@@ -125,7 +125,7 @@
 
         Button:
             font_size:100
-            text: str(root.state[7])
+            text: root.state[7]
             disabled: root.state[7] != ''
             on_press: root.select_cell(2, 1)
             on_release: root.player_moved()
