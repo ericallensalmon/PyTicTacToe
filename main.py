@@ -1,8 +1,8 @@
 # TODO: figure out if there's a good way to automatically strip out debug code for python, for now comment out in push
 # debug only
-# from difficulty import Difficulty
-# from playermode import PlayerMode
-# from screens.screen import Screen
+# from constants.difficulty import Difficulty
+# from constants.playermode import PlayerMode
+# from constants.screen import Screen
 # from screens.game import Game
 
 
