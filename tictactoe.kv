@@ -1,12 +1,13 @@
 #:kivy 1.10.0
 #: import Difficulty constants.difficulty.Difficulty
-#: import PlayerMode constants.playermode.PlayerMode
+#: import GameMode constants.gamemode.GameMode
+#: import Position constants.position.Position
 #: import Screen constants.screen.Screen
 #: import PlayerSelect screens.playerselect.PlayerSelect
 #: import DifficultySelect screens.difficultyselect.DifficultySelect
 #: import Game screens.game.Game
 
-# note: file name lacks underscores due to kivy's reliance on file naming convention
+# note: file name lacks underscores due to Kivy's reliance on file naming convention
 
 <TicTacToeScreenManager>:
     id: screen_manager
@@ -39,11 +40,11 @@
         spacing: 20
         Button:
             text: "One Player"
-            on_release: root.manager.screen_game.mode = PlayerMode.ONE
+            on_release: root.manager.screen_game.mode = GameMode.ONE_PLAYER
             on_release: root.manager.current = Screen.DIFFICULTY_SELECT.value
         Button:
             text: "Two Player"
-            on_release: root.manager.screen_game.mode = PlayerMode.TWO
+            on_release: root.manager.screen_game.mode = GameMode.TWO_PLAYER
             on_release: root.manager.current = Screen.GAME.value
 
 <DifficultySelect>:
@@ -55,15 +56,15 @@
         spacing: 20
         Button:
             text: "Easy"
-            on_release: root.manager.screen_game.difficulty = Difficulty.EASY
+            on_release: root.manager.screen_game.set_difficulty(Difficulty.EASY)
             on_release: root.manager.current = Screen.GAME.value
         Button:
             text: "Normal"
-            on_release: root.manager.screen_game.difficulty = Difficulty.NORMAL
+            on_release: root.manager.screen_game.set_difficulty(Difficulty.NORMAL)
             on_release: root.manager.current = Screen.GAME.value
         Button:
             text: "Hard"
-            on_release: root.manager.screen_game.difficulty = Difficulty.HARD
+            on_release: root.manager.screen_game.set_difficulty(Difficulty.HARD)
             on_release: root.manager.current = Screen.GAME.value
 
 <Game>:
@@ -74,65 +75,66 @@
         padding:10
         size: root.width, root.height
 
+        # TODO: would love to refactor these so there's not so much duplicate code, need to look it up in Kivy
         Button:
             font_size:100
-            text: root.state[0]
-            disabled: root.state[0] != ''
-            on_press: root.select_cell(0, 0)
+            text: root.state[Position.TOP_LEFT]
+            disabled: root.state[Position.TOP_LEFT] != ''
+            on_press: root.select_cell(Position.TOP_LEFT)
             on_release: root.player_moved()
 
         Button:
             font_size:100
-            text: root.state[1]
-            disabled: root.state[1] != ''
-            on_press: root.select_cell(0, 1)
+            text: root.state[Position.TOP_EDGE]
+            disabled: root.state[Position.TOP_EDGE] != ''
+            on_press: root.select_cell(Position.TOP_EDGE)
             on_release: root.player_moved()
 
         Button:
             font_size:100
-            text: root.state[2]
-            disabled: root.state[2] != ''
-            on_press: root.select_cell(0, 2)
+            text: root.state[Position.TOP_RIGHT]
+            disabled: root.state[Position.TOP_RIGHT] != ''
+            on_press: root.select_cell(Position.TOP_RIGHT)
             on_release: root.player_moved()
 
         Button:
             font_size:100
-            text: root.state[3]
-            disabled: root.state[3] != ''
-            on_press: root.select_cell(1, 0)
+            text: root.state[Position.LEFT_EDGE]
+            disabled: root.state[Position.LEFT_EDGE] != ''
+            on_press: root.select_cell(Position.LEFT_EDGE)
             on_release: root.player_moved()
 
         Button:
             font_size:100
-            text: root.state[4]
-            disabled: root.state[4] != ''
-            on_press: root.select_cell(1, 1)
+            text: root.state[Position.CENTER]
+            disabled: root.state[Position.CENTER] != ''
+            on_press: root.select_cell(Position.CENTER)
             on_release: root.player_moved()
 
         Button:
             font_size:100
-            text: root.state[5]
-            disabled: root.state[5] != ''
-            on_press: root.select_cell(1, 2)
+            text: root.state[Position.RIGHT_EDGE]
+            disabled: root.state[Position.RIGHT_EDGE] != ''
+            on_press: root.select_cell(Position.RIGHT_EDGE)
             on_release: root.player_moved()
 
         Button:
             font_size:100
-            text: root.state[6]
-            disabled: root.state[6] != ''
-            on_press: root.select_cell(2, 0)
+            text: root.state[Position.BOTTOM_LEFT]
+            disabled: root.state[Position.BOTTOM_LEFT] != ''
+            on_press: root.select_cell(Position.BOTTOM_LEFT)
             on_release: root.player_moved()
 
         Button:
             font_size:100
-            text: root.state[7]
-            disabled: root.state[7] != ''
-            on_press: root.select_cell(2, 1)
+            text: root.state[Position.BOTTOM_EDGE]
+            disabled: root.state[Position.BOTTOM_EDGE] != ''
+            on_press: root.select_cell(Position.BOTTOM_EDGE)
             on_release: root.player_moved()
 
         Button:
             font_size:100
-            text: root.state[8]
-            disabled: root.state[8] != ''
-            on_press: root.select_cell(2, 2)
+            text: root.state[Position.BOTTOM_RIGHT]
+            disabled: root.state[Position.BOTTOM_RIGHT] != ''
+            on_press: root.select_cell(Position.BOTTOM_RIGHT)
             on_release: root.player_moved()
