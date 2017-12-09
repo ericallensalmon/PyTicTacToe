@@ -1,3 +1,5 @@
+"""A simple Tic Tac Toe game that supports one or two players, as well as multiple difficulties of AI"""
+
 # TODO: figure out if there's a good way to automatically strip out debug code for python, for now comment out in push
 # debug only
 # from constants.difficulty import Difficulty
@@ -17,6 +19,7 @@ Config.set('graphics', 'resizable', False)
 
 
 class TicTacToeScreenManager(ScreenManager):
+    """Enables easy transitions between the different screens of the game"""
     screen_player_select = ObjectProperty(None)
     screen_difficulty_select = ObjectProperty(None)
     screen_game = ObjectProperty()
@@ -30,6 +33,7 @@ class TicTacToeScreenManager(ScreenManager):
 
 
 class TicTacToeApp(App):
+    """The entry point for the Tic Tac Toe game"""
     # debug only
     # def build(self):
     #     manager = TicTacToeScreenManager()

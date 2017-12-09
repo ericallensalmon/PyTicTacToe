@@ -1,3 +1,8 @@
+"""
+Module for the main game logic
+
+Handles the main game loop including turn order, AI, and end conditions
+"""
 import random
 
 from kivy.uix.screenmanager import Screen
@@ -8,8 +13,8 @@ from constants.playermode import PlayerMode
 from constants.playertoken import PlayerToken
 
 
-# Main game
 class Game(Screen):
+    """Main game screen"""
     # for some reason, adding state to init causes an error. My guess is that Kivy binding happens before init
     # the others seem to be okay because they aren't being evaluated until button press, but it's fragile
 
@@ -18,7 +23,7 @@ class Game(Screen):
     state = ListProperty(['', '', '', '', '', '', '', '', ''])
 
     def __init__(self, **kwargs):
-
+        """Initializes screen with default values"""
         self.mode = ObjectProperty(None)
         self.difficulty = ObjectProperty(None)
 
@@ -30,6 +35,7 @@ class Game(Screen):
         super(Game, self).__init__(**kwargs)
 
     def select_cell(self, x: int, y: int):
+        """Selects a cell using the current player's token"""
         if not self._allow_move:
             return
 
@@ -38,6 +44,7 @@ class Game(Screen):
         self.check_end_conditions()
 
     def player_moved(self):
+        """Called when a player (human or AI) moves to progress the game"""
         # poor man's debounce - this and allow_move mostly handle rapid clicking
         if self._thinking:
             return
@@ -51,13 +58,14 @@ class Game(Screen):
         self._allow_move = True
 
     def move(self):
+        """Selects a move based on the AI's difficulty and corresponding decision tree"""
         token = self._current_player_token
         o = PlayerToken.O.value
         x = PlayerToken.X.value
         opponent_token = o if self._current_player_token == x else x
         cell = -1
 
-        # TODO: refactor AI logic out
+        # TODO: refactor AI logic out into its own module
         # on easy, the moves are completely random (handled below as a fallback for the other AI's)
 
         # on normal, the moves are mostly random, but the opponent will block you from completing 3
@@ -81,6 +89,7 @@ class Game(Screen):
         #   so that each corner has an opposite, etc. Not sure if it's worth it.
         # on hard, the opponent will choose the best possible move. The house always wins.
         elif self.difficulty == Difficulty.HARD:
+            # TODO: the hard difficult logic is pretty hard to follow right now, refactoring numbers out will help
             cell = self.get_winning_cell(token)
             if cell == -1:
                 cell = self.get_winning_cell(opponent_token)
@@ -588,8 +597,8 @@ class Game(Screen):
         self.switch_player()
         return
 
-    # Returns a cell where the given token could win, or -1 otherwise
     def get_winning_cell(self,token:str) -> int:
+        """Checks to see if any cell could lead to a win, and returns it (or -1 otherwise)"""
         cell = -1
 
         # Row 0
@@ -659,19 +668,29 @@ class Game(Screen):
         return cell
 
     def get_random_cell(self) -> int:
-        return random.randrange(0, self._grid_size) * self._grid_size + random.randrange(0, self._grid_size)
+        """Gets a random cell in the grid"""
+        cell = -1
+        while cell == -1:
+            rand = random.randrange(0, self._grid_size) * self._grid_size + random.randrange(0, self._grid_size)
+            if self.state[rand] == '':
+                cell = rand
+
+        return cell
 
     def switch_player(self):
+        """Switches the current player token between the player's tokens"""
         self._current_player_token = PlayerToken.O.value if self._current_player_token == PlayerToken.X.value \
             else PlayerToken.X.value
 
     def reset(self):
+        """Resets the grid state"""
         for i in range(len(self.state)):
                 self.state[i] = ''
         # X is always the token for the player that makes the first move (seems odd?)
         self._current_player_token = PlayerToken.X.value
 
     def check_end_conditions(self):
+        """Check all game end conditions"""
         if self.check_win_condition():
             self.reset()
             return
@@ -681,10 +700,12 @@ class Game(Screen):
             return
 
     def check_win_condition(self) -> bool:
+        """Check all game win conditions"""
         return self.check_rows() or self.check_cols() or self.check_diagonals()
         pass
 
     def check_draw_condition(self) -> bool:
+        """Check the draw condition"""
         # if any of the cells have an empty space, it's not yet a draw
         for i in range(len(self.state)):
                 if self.state[i] == '':
@@ -692,9 +713,11 @@ class Game(Screen):
         return True
 
     def check_rows(self) -> bool:
+        """Check rows for a match"""
         return self.check_row(0) or self.check_row(1) or self.check_row(2)
 
     def check_row(self, x: int) -> bool:
+        """Check row for a match"""
         cols = self._grid_size
         if self.state[x*self._grid_size] != '' \
                 and (self.state[x*cols] == self.state[x*cols+1] == self.state[x*cols+2]):
@@ -702,14 +725,17 @@ class Game(Screen):
         return False
 
     def check_cols(self) -> bool:
+        """Check columns for a match"""
         return self.check_col(0) or self.check_col(1) or self.check_col(2)
 
     def check_col(self, y: int) -> bool:
+        """Check column for a match"""
         if self.state[y] != '' and (self.state[y] == self.state[self._grid_size+y] == self.state[2*self._grid_size+y]):
             return True
         return False
 
     def check_diagonals(self) -> bool:
+        """Check diagonals for a match"""
         if self.state[0] != '' and (self.state[0] == self.state[4] == self.state[8]):
             return True
 
